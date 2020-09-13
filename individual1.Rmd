@@ -1,0 +1,160 @@
+---
+title: "Lab 2"
+author: "Ashley Sackpraseuth"
+date: "9/8/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading the Data
+
+```{r}
+choco <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/data/choco.csv") 
+str(choco) 
+```
+### Searching for the Best Chocolates
+
+1. How are the ratings distributed? Create both a histogram and a boxplot and describe them. Don't forget to mention outliers, if there are any. 
+
+```{r}
+hist(choco$Rating, main = 'Histogram of Chocolate Rating', xlab = "Rating")
+
+boxplot(choco$Rating, main = 'Boxplot of Chocolate Rating', ylab = 'Rating')
+```
+
+The histogram shows that the ratings are skewed to the left, meaning many of the chocolates in this dataset received high ratings. The boxplot supports this because the IQR is relatively slim (most ratings fall between 3.0 and 3.5) and the median is approximately 3.25 - a high number considering the rating scale ranges from 1.0 to 4.0. There are four outliers as seen in the boxplot. They range on a scale from 1.0 to 2.0.  
+
+
+
+
+
+2. How does the number of ratings depend on the year? Draw a bar chart of the number of reports. 
+```{r}
+choco_count <- table(choco$Rating, choco$Date)
+
+rating_colors <- c("firebrick3", "firebrick2", "firebrick1", "darkorange4", "darkorange3", "darkorange2", "darkorange1", "darkorange", "darkgoldenrod3", "darkgoldenrod2", "darkgoldenrod1","gold", "chartreuse3")
+
+barplot(choco_count, main = "Chocolate Ratings by Year", xlab = "Year", ylab = "Number of Ratings", col = rating_colors)
+
+legend(x = "topright", cex = 0.75, fill = rating_colors, legend = c("1", "1.5", "1.75", "2", "2.25", "2.5", "2.6", "2.75", "3", "3.25", "3.5", "3.75", "4"))
+
+```
+
+Excluding 2020 from this analysis because this year is not complete, 2014 had the most ratings. There were 4.0 ratings across all years. 2006 had the highest ratio of low ratings. In all years except 2017, the number of 4.0 and 2-2.75 ratings is relatively stable; 3-3.75 ratings fluctuate the most.
+
+
+
+
+
+3. Do ratings depend on the cacao percentage of a chocolate bar? Create both numerical and graphical summaries, and explain. 
+
+```{r}
+cacao_count <- table(choco$Rating, choco$Cocoa_Percent)
+
+rating_colors <- c("firebrick3", "firebrick2", "firebrick1", "darkorange4", "darkorange3", "darkorange2", "darkorange1", "darkorange", "darkgoldenrod3", "darkgoldenrod2", "darkgoldenrod1","gold", "chartreuse3")
+
+barplot(cacao_count, main = "Chocolate Ratings by Cacao Percentage", xlab = "Cocao Percentage", ylab = "Number of Ratings", col = rating_colors)
+
+legend(x = "topright", cex = 0.75, fill = rating_colors, legend = c("1", "1.5", "1.75", "2", "2.25", "2.5", "2.6", "2.75", "3", "3.25", "3.5", "3.75", "4"))
+
+
+
+plot(choco$Cocoa_Percent, choco$Rating, main = "Cocoa Percent by Rating", xlab = "Cocoa Percent", ylab = "Rating")
+
+
+
+Cocoa_Percent <- choco$Cocoa_Percent
+Rating <- choco$Rating
+
+choco_ranked <- head(choco[order(-Rating, Cocoa_Percent),], n = 10)
+choco_ranked
+
+choco_worst <- tail(choco[order(-Rating, Cocoa_Percent),], n = 10)
+choco_worst
+```
+Yes, ratings do depend on the cocoa percentage. The barplot shows that the majority of the chocolates reviewed contain 70% cocoa. Very few chocolates that have less than 50% cocoa are reviewed based on the scatterplot. The choco_ranked table shows chocolates with the highest ratings all contain ~60% cocoa. The choco_worst table shows chocolates with the worst ratings have a high percentage of cocoa ( >= 70).
+
+
+
+
+4. How do different characteristics of the chocolate compare? To elaborate, which characteristics tend to be more favorable and which ones are not? Create both numerical and graphical summaries, and explain.
+
+```{r}
+choco_ranked
+choco_worst
+```
+To answer this question, we can revisit the choco_ranked and choco_worst tables, Based on the choco_ranked table, many of the best chocolates were be described as tasting like cocoa, creamy, and sweet. They contained ~60% cocoa. These chocolates were found in France and their beans originated in Peru. The choco_worst table on the otherhand show that the worst ranked chocolates were described as tasting very bitter, some even going as far as claiming what they tasted was "not chocolate" or tasting like cardboard. They all contained >= 70% cocoa and a blend of bean origins. 
+
+
+
+
+
+5. Brainstorm two analyses you would like to perform with your teammate. Describe in plain language what comparisons are you making. Create suitable numerical and graphical summaries for your analyses. Describe the results.
+
+One analysis I wanted to look at was chocolate ratings based on company to see which company makes the best chocolate. Another analysis I wanted to look was how the number of ingredients affects the rating. 
+
+To accomplish the first task I first wanted to see how many chocolate companies there were
+```{r}
+num_companies <- nlevels(choco$Company)
+num_companies
+
+comp_freq <- table(choco$Company)
+View(comp_freq)
+```
+It would be impossible to analyze the ratings of 500+ companies so I chose to look at the top 5 companies with the highest frequency in this dataset. 
+
+```{r}
+#Rating Calculations
+avg_soma <- mean(choco[choco$Company == "Soma", "Rating"], na.rm = TRUE)
+avg_arete <- mean(choco[choco$Company == "Arete", "Rating"], na.rm = TRUE)
+avg_fresco <- mean(choco[choco$Company == "Fresco", "Rating"], na.rm = TRUE)
+avg_bonnat <- mean(choco[choco$Company == "Bonnat", "Rating"], na.rm = TRUE)
+avg_pralus <- mean(choco[choco$Company == "Pralus", "Rating"], na.rm = TRUE)
+
+
+#Ratings
+avg_soma
+avg_arete
+avg_fresco
+avg_bonnat
+avg_pralus
+
+
+#Boxplot 
+#(I am aware we haven't learned the following in class but I have prior R experience)
+
+comp_df <- choco[(choco$Company == "Soma"| choco$Company == "Arete"| choco$Company == "Fresco"| choco$Company == "Bonnat"| choco$Company == "Pralus"),]
+
+
+library(ggplot2)
+library(EnvStats)
+
+ggplot(comp_df, aes(`Company`,`Rating`, fill = `Company`))+ geom_boxplot() + 
+  ggtitle("Average Rating of Chocolate Companies") + labs(x="Company",y="Rating") + stat_n_text() +
+  stat_summary(fun=mean, geom="point", shape=20, size=6, color="yellow", fill="yellow")+ scale_x_discrete(0, 45)
+
+```
+
+Soma has the best chocolate with an average rating of 3.59, followed by Arete with an average rating of 3.53, then Bonnat wtih 3.46, and lastly Pralus with 3.17. Based on the boxplot, Bonnat, Fresco, Pralus, and Soma all have their own outlier. Bonnat also appears to have the widest range of ratings. 
+
+
+
+To accomplish the next task, I made tables similar to choco_rank and choco_worst
+```{r}
+str(choco$Ingredients)
+
+Rating <- choco$Rating
+Ingredients <- choco$Ingredients
+
+ingred_best <- head(choco[order(-Rating, Ingredients),], n = 10)
+ingred_best
+
+
+ingred_worst <- tail(choco[order(-Rating, Ingredients),], n = 10)
+ingred_worst
+
+```
+Based on the ingred_best table, the best tasting chocolates were made of 2 ingredients - beans and sugar. The worst tasting chocolates either had no information about their ingredients or were made up of 5 ingredients - beans, sugar, cocoa butter, vanilla, and lecithin. This finding makes sense because the more ingredients something has, the worst it is going to taste. 
