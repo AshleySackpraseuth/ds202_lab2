@@ -253,6 +253,7 @@ Tanzania <- subset(choco, choco$Bean_Origin == 'Tanzania',)
 DomRep <- subset(choco, choco$Bean_Origin == 'Dominican Republic',)
 ```
 # What I did was I look back the top ten best ranked chocolates and took the top three bean orgins and created their own datasets. With those datasets I then created a histogram to see the range of their rankings. 
+
 ```{r}
 hist(Madagascar$Rating)
 ```
