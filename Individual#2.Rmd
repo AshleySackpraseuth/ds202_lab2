@@ -1,0 +1,115 @@
+---
+title: "Individual 2"
+author: "Heather M"
+date: "9/10/2020" 
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+choco <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/data/choco.csv") 
+str(choco)
+```
+
+#1. How are the ratings distributed? Create both a histogram and a boxplot and describe them. Don’t forget to mention outliers, if there are any.
+
+#explanation: The ratings are on a scale from 1.0-5.0, with 1 being unpleasant and 5 being outstanding.
+
+```{r}
+hist(choco$Rating)
+```
+#The histogram shows that most of the observations have rating between approximately 2.3 - 4. There are also some points in the 1.5 -2.0 section of the graph. There appears to be one potenial outlier at 1.0 but I dont think it would affect the outcome of the analysis to much. 
+
+```{r}
+boxplot(choco$Rating)
+```
+
+#The boxplot of the ratings displays that the average score that chocolates recieved was around 3.2 or 3.3. It also tells us the range of the data which is between 1.0 and 4.0. In this boxplot it shows that the chocolates that recieved 2.0 and below were considered outliers in this dataset. 
+
+#2.How does the number of ratings depend on the year? Draw a bar chart of the number of reports. 
+Date <- choco$Date
+Rating <- choco$Rating
+```{r}
+barplot(choco$Rating,names.arg = choco$Date)
+```
+#3.Do ratings depend on the cacao percentage of a chocolate bar? Create both numerical and graphical summaries, and explain.
+```{r}
+hist(choco$Cocoa_Percent,)
+```
+```{r}
+percent <- choco$Cocoa_Percent
+names(percent) <- choco$Rating
+head(sort(percent, decreasing = TRUE), n = 10)
+top10 <- head(sort(percent, decreasing = TRUE), n = 10)
+top10
+```
+#average rating for top 10:2.025
+```{r}
+head(sort(percent, decreasing = FALSE), n = 10)
+bottom10 <- head(sort(percent, decreasing = FALSE), n = 10)
+bottom10
+```
+#The average rating for bottom 10: 3.025
+#Explanation: In order to answer this question, I looked at the ratings for the chocolates with the highest and lowest percentages of Cocoa in them. At first, I looked at the top ten observations in the cocoa percentage. Through this I found that that average rating for the top ten observations is 2.025. I then did the same for the 10 choloates with the lowest cocoa percentage and found that the average was 3.025. By numerical analysis, it shows that less percentages of cocoa  on average get a 1.0 ratings higher that the chocolates with the highest percentages.
+```{r}
+plot(percent, choco$Rating)
+```
+#Explanation: Through the scatter plot above, it can be infered that most the cocoa percentages that were  in between 60% and 80% tend to have the highest ratings. 
+
+#4.How do different characteristics of the chocolate compare? To elaborate, which characteristics tend to be more favorable and which ones are not? Create both numerical and graphical summaries, and explain.
+```{r}
+head(subset(choco, Rating > 3.00), n = 10)
+```
+#According to this chart of the top 10 rated chocolates have some very similar chararistics. One similarity is that 3 out of the top 5 come from the company 5150. It can be concluded that they and the company A Morin produce some of the best chocolate on this list. Also it can be seen that 80% of the chocolate on this top rated list have a cococa percentage around 70%. Another inference that can be made is that choloate with a approximately 70% of cocoa is the best amount to have top rank chocolate.
+
+```{r}
+plot(choco$Rating, choco$Date)
+```
+#In this scatterplot, you can see that as the years increase there are less observations getting lower ratings. With this graph you could infer that with time these chocolates can improve and recieve higher ratings. 
+
+#5.Brainstorm two analyses you would like to perform with your teammate. Describe in plain language what comparisons are you making. Create suitable numerical and graphical summaries for your analyses. Describe the results.
+
+#One analysis I would like to look at countries produce the most chocolate. To find the proper conclusion, I would use create a data frame to compare the number of rows. GRaphically, I could look bar graph 3 countries and see how offer they show up. 
+```{r}
+USA <- subset(choco,choco$Location == 'U.S.A.', )
+```
+```{r}
+Brazil <- subset(choco,choco$Location == 'Brazil', )
+```
+```{r}
+France <- subset(choco,choco$Location == 'France', )
+```
+
+#I decided to choose 3 random countries on different continents to see out of them who produces the most. According to these broken down datasets it shows that the United States produces the most with over 900 observations. For the South American contintent, I went with Brazil, which had the least amount at only 24 observations. Finally in Europe I chose France and it had over 170 observations. In conclusion, the United States produces the most chocolate out these countries.
+```{r}
+boxplot(USA$Rating)
+```
+#This boxplot shows that the United States' summarary statistics. On average it shows that American chocolate recieves approximately a 3.3 out of 5.0. 
+
+#Another analysis I would like to look at is what bean orgin has been look at the most and ranked the best on this list. So, I would take the top 3 Bean orgins and see how times they have been used in  the dataset. GRaphically I would analyze their rankings. 
+```{r}
+head(subset(choco, Rating > 3.00), n = 10)
+```
+```{r}
+Madagascar <- subset(choco, choco$Bean_Origin == 'Madagascar',)
+Tanzania <- subset(choco, choco$Bean_Origin == 'Tanzania',)
+DomRep <- subset(choco, choco$Bean_Origin == 'Dominican Republic',)
+```
+# What I did was I look back the top ten best ranked chocolates and took the top three bean orgins and created their own datasets. With those datasets I then created a histogram to see the range of their rankings. 
+```{r}
+hist(Madagascar$Rating)
+```
+
+```{r}
+hist(Tanzania$Rating)
+```
+```{r}
+hist(DomRep$Rating)
+```
+#By looking at these graphs, there are multiple things we can conclude. WE can see that Madagascar has the most observations and lots of those observations have a ranking 3.3 or higher. This is greater than both of the bean orgin countries. 
+
+
+
